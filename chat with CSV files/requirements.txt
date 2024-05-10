@@ -2,5 +2,5 @@
 streamlit==1.34.0
 streamlit-chat==0.1.1
 tiktoken==0.6.0
-faiss-cpu
+faiss-cpu==1.8.0
 google-generativeai==0.5.2
