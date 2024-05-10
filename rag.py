@@ -44,8 +44,10 @@ if uploaded_file :
     data = loader.load()
     # st.write(data)
     
-    google_key = os.getenv('GOOGLE_API_KEY')
+    # google_key = os.getenv('GOOGLE_API_KEY')
     # pc_key = os.getenv('PINECONE_API_KEY')
+
+    google_key = st.secrets["GOOGLE_API_KEY"] 
     if not google_key:
         st.error("GOOGLE_API_KEY not found in .env file. Please make sure it's set correctly.")
     # if not pc_key:
