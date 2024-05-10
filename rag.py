@@ -2,8 +2,6 @@ import streamlit as st
 from streamlit_chat import message
 import tempfile
 import os
-from dotenv import load_dotenv
-# import yaml
 # import google.generativeai as genai
 from langchain_google_genai import GoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI as Gemini
@@ -45,9 +43,7 @@ if uploaded_file :
     loader = CSVLoader(file_path=tmp_file_path, encoding="utf-8", csv_args={'delimiter': ','})
     data = loader.load()
     # st.write(data)
-
-    ### Load environment variables from .env file
-    load_dotenv()
+    
     google_key = os.getenv('GOOGLE_API_KEY')
     # pc_key = os.getenv('PINECONE_API_KEY')
     if not google_key:
@@ -56,13 +52,6 @@ if uploaded_file :
     #     st.error("PINECONE_API_KEY not found in .env file. Please make sure it's set correctly.")
     # st.write("GOOGLE_API_KEY:", google_key) 
     # st.write("PINECONE_API_KEY:", pc_key)
-
-    ### Load configuration from yaml file
-    # with open("config.yaml", 'r') as file:
-    #     config = yaml.safe_load(file)
-    # google_api_key = config['api_keys']['google']
-    # pinecone_api_key = config['api_keys']['pinecone']
-    # st.write(google_api_key)
 
     # Embeddings allow transforming the parts cut by CSVLoader into vectors, which then represent an index based on the content of each row of the given file.
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=google_key)
