@@ -1,0 +1,5 @@
+﻿langchain==0.0.180
+streamlit==1.22.0
+streamlit-chat==0.0.2.2
+tiktoken==0.4.0
+faiss-cpu

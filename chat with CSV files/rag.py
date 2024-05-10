@@ -1,36 +1,34 @@
 import streamlit as st
 from streamlit_chat import message
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import ConversationalRetrievalChain
-from langchain.document_loaders.csv_loader import CSVLoader
-from langchain.vectorstores import FAISS
 import tempfile
 import os
 from dotenv import load_dotenv
-import yaml
-import google.generativeai as genai
+# import yaml
+# import google.generativeai as genai
 from langchain_google_genai import GoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-from langchain_google_genai import GoogleGenerativeAI, ChatGoogleGenerativeAI as Gemini
+from langchain_google_genai import ChatGoogleGenerativeAI as Gemini
+from langchain.chains import ConversationalRetrievalChain
+from langchain.document_loaders.csv_loader import CSVLoader
+from langchain.vectorstores import FAISS
 
 # Create a Streamlit app
 st.set_page_config(
     page_title="Chat with CSV",
-    page_icon="icons8-whatsapp-48.png",
-    layout="wide",
+    page_icon="icons8-alien-16.png",
+    layout="centered",
     initial_sidebar_state="collapsed"
 )
 
 st.title(" ")
-st.markdown("<h3 style='text-align: center;'>Generative AI Application to Converse with your CSV files data</h3", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>CSV AI Data ChatBot</h3", unsafe_allow_html=True)
 st.title(" ")
-# st.image("rachit-tank-lZBs-lD9LPQ-unsplash.jpg")
 
 
 # Add an introductory paragraph
 st.markdown("""
-Generative AI Application to Converse with your CSV files data
+**Go beyond rows and columns.**  Transform your CSV (Comma Seperated Values) data into a dynamic knowledge base.  Ask questions in plain English and receive insightful answers powered by AI.
 """)
+
 
 user_api_key = st.sidebar.text_input(
     label="#### Enter your Gemini API key, here",
@@ -51,21 +49,22 @@ if uploaded_file :
     ### Load environment variables from .env file
     load_dotenv()
     google_key = os.getenv('GOOGLE_API_KEY')
-    pc_key = os.getenv('PINECONE_API_KEY')
+    # pc_key = os.getenv('PINECONE_API_KEY')
     if not google_key:
         st.error("GOOGLE_API_KEY not found in .env file. Please make sure it's set correctly.")
-    if not pc_key:
-        st.error("PINECONE_API_KEY not found in .env file. Please make sure it's set correctly.")
+    # if not pc_key:
+    #     st.error("PINECONE_API_KEY not found in .env file. Please make sure it's set correctly.")
     # st.write("GOOGLE_API_KEY:", google_key) 
     # st.write("PINECONE_API_KEY:", pc_key)
 
-    ### Load configuration
+    ### Load configuration from yaml file
     # with open("config.yaml", 'r') as file:
     #     config = yaml.safe_load(file)
     # google_api_key = config['api_keys']['google']
     # pinecone_api_key = config['api_keys']['pinecone']
     # st.write(google_api_key)
 
+    # Embeddings allow transforming the parts cut by CSVLoader into vectors, which then represent an index based on the content of each row of the given file.
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=google_key)
     vectorstore = FAISS.from_documents(data, embeddings)
 
@@ -86,11 +85,11 @@ if uploaded_file :
     if 'history' not in st.session_state:
         st.session_state['history'] = []
 
-    if 'generated' not in st.session_state:
-        st.session_state['generated'] = ["Hello ! Ask me anything about " + uploaded_file.name + " 🤗"]
-
     if 'past' not in st.session_state:
-        st.session_state['past'] = ["Hey ! 👋"]
+        st.session_state['past'] = ["Greetings! 😊"]
+
+    if 'generated' not in st.session_state:
+        st.session_state['generated'] = ["I'm your data assistant! 😊 Ask me anything about " + uploaded_file.name]
         
     response_container = st.container() #container for the chat history
     container = st.container() # container for the user's text input
@@ -98,8 +97,8 @@ if uploaded_file :
 
     with container:
         with st.form(key='my_form', clear_on_submit=True):
-            user_input = st.text_input("Query: ", placeholder="Talk about your csv data here (:", key="input")
-            submit_form = st.form_submit_button(label='Send')
+            user_input = st.text_input("Enter a Prompt here: ", placeholder="What insights are you curious about? Ask here...", key="input")
+            submit_form = st.form_submit_button(label='Submit')
 
             if submit_form and user_input:
                 output = conversational_chat(user_input)
@@ -110,6 +109,17 @@ if uploaded_file :
             if st.session_state['generated']:
                 with response_container:
                     for i in range(len(st.session_state['generated'])):
-                        message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style="big-smile")
-                        message(st.session_state["generated"][i], key=str(i), avatar_style="thumbs")
+                        message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style="adventurer")
+                        message(st.session_state["generated"][i], key=str(i), avatar_style="icons")
+
+st.title(" ")
+st.title(" ")
+st.markdown("""
+    <footer style="display: flex; justify-content: center; align-items: center; text-align: center; padding: 15px; border-radius: 10px; margin-top: 20px; box-shadow: 2px 1px 4px rgba(188, 192, 198, 0.38)">
+        <p style="font-size: 16px; color: #f0f0f0;">App Developed by 
+            <a href="https://twitter.com/raqibcodes" target="_blank" style="color: #90caf9; text-decoration: none; font-weight: bold;">raqibcodes</a>
+        </p>
+    </footer>
+""",
+ unsafe_allow_html=True)
     
