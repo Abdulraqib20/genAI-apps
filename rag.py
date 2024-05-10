@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_chat import message
 import tempfile
 import os
-# import google.generativeai as genai
+import google.generativeai as genai
 from langchain_google_genai import GoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI as Gemini
 from langchain.chains import ConversationalRetrievalChain
